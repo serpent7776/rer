@@ -1,0 +1,7 @@
+.depend
+*.[do]
+rer
+tests/CUnit-*.xml
+tests/out/*
+tests/rer_tests
+*.sw?

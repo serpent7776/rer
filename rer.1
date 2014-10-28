@@ -1,0 +1,39 @@
+.\" Man page for rer
+.\" Contact serpent7776@gmail.com to correct errors or omissions.
+.TH rer 1
+.SH NAME
+rer - regular expression file renamer
+.SH SYNOPSIS
+rer /pattern/replacement/modifiers file [file [...]]
+.SH DESCRIPTION
+rer is tool that rename files that matches given pattern.
+.Pp
+Each file name given as argument is matched against pattern.
+If a match is found file is renamed according to given replacement using pcre(3) compatible regular expression.
+.P
+Recognized modifiers:
+.IP "'i'"
+Makes pattern case-insensitive.
+.IP "'x'"
+Use PCRE_EXTENDED flag: ignore whitespace in pattern and allow for coments.
+.IP "'U'"
+Inverts the "greediness" of the quantifiers, so they are not greedy.
+.SH EXAMPLES
+.P
+Rename file foobar to foobaz
+.IP
+rer /bar/baz/ foobar
+.P
+Swap first word with second, renaming foo-bar to bar-foo, foo-baz to baz-foo and foo-123 to 123-foo
+.IP
+rer "/(\\w+)-(\\w+)/\\2-\\1/" foo-bar foo-baz foo-123
+.P
+Change foo to bar ignoring case: this will rename FOOBAR to barBAR, foobar to barbar
+.IP
+rer /foo/bar/i *
+.SH SEE ALSO
+mv(1), pcre(3)
+.SH AUTHOR
+Serpent7776 (serpent7776@gmail.com)
+.SH BUGS
+none known
