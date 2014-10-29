@@ -5,3 +5,4 @@ tests/CUnit-*.xml
 tests/out/*
 tests/rer_tests
 *.sw?
+*.gz

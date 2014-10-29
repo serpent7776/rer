@@ -2,7 +2,8 @@ PROG = rer
 SRCS = fdlist.c rer.c replace_str.c main.c
 CC = clang
 CFLAGS += -std=gnu99 -O2
-NO_MAN = 
+MAN = rer.1
+MANTARGET = man
 
 DEBUG ?= 0
 .if ${DEBUG} > 0
