@@ -34,6 +34,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <unistd.h>
 #include "rer_def.h"
 #include "replace_str.h"
 #include "debug.h"
@@ -200,13 +202,19 @@ char* rer_processname(RER _rer, const char* path)
 
 Rer_status rer_rename(RER _rer, const char* from_name, const char* to_name)
 {
-	DEBUG_WRITE("rer: renaming file fom '%s' to '%s'\n", from_name, to_name);
-	const int status = rename(from_name, to_name);
-	if (_rer) {
-		Rer* rer=(Rer*)_rer;
-		rer->status = status==0 ? RER_STATUS_OK : RER_STATUS_RENAME_FAILED;
+	const int file_exists = access(to_name, F_OK);
+	if (file_exists == -1 && errno == ENOENT) {
+		//file to_name does not exists
+		DEBUG_WRITE("rer: renaming file from '%s' to '%s'\n", from_name, to_name);
+		const int status = rename(from_name, to_name);
+		if (_rer) {
+			Rer* rer=(Rer*)_rer;
+			rer->status = status==0 ? RER_STATUS_OK : RER_STATUS_RENAME_FAILED;
+		}
+		return status;
 	}
-	return status;
+	DEBUG_WRITE("rer: could not rename file '%s' to '%s': file exists\n", from_name, to_name);
+	return RER_STATUS_FILE_EXISTS;
 }
 
 Rer_error rer_reset(RER _rer)

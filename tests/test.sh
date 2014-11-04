@@ -11,6 +11,7 @@ test_start ( )
 	ASSERT_COUNT=0
 	PASS=0
 	FAIL=0
+	DIR=out/test$1
 }
 
 test_end ( )
@@ -49,7 +50,6 @@ ${RM_RF} out
 ${MKDIR} out
 
 test_start 1
-DIR=out/test{$TEST}
 ${MKDIR} ${DIR}
 ${TOUCH} ${DIR}/foobar
 ${RER} /bar/baz/ ${DIR}/foobar
@@ -58,7 +58,6 @@ assert_cmd "[ -f ${DIR}/foobaz ]" "output file does not exist"
 test_end
 
 test_start 2
-DIR=out/test{$TEST}
 ${MKDIR} ${DIR}
 ${TOUCH} ${DIR}/foo
 ${TOUCH} ${DIR}/bar
@@ -71,7 +70,6 @@ assert_cmd "[ -f ${DIR}/fooz ]" "output file does not exist"
 test_end
 
 test_start 3
-DIR=out/test{$TEST}
 ${MKDIR} ${DIR}
 ${TOUCH} ${DIR}/xx
 ${TOUCH} ${DIR}/xxx
@@ -84,7 +82,6 @@ assert_cmd "[ -f ${DIR}/xxyz ]" "output file does not exist"
 test_end
 
 test_start 4
-DIR=out/test{$TEST}
 ${MKDIR} ${DIR}
 ${TOUCH} ${DIR}/foo12
 ${TOUCH} ${DIR}/bar0
@@ -97,7 +94,6 @@ assert_cmd "[ -f ${DIR}/bazfoo ]" "output file does not exist"
 test_end
 
 test_start 5
-DIR=out/test{$TEST}
 ${MKDIR} ${DIR}
 ${TOUCH} ${DIR}/foo12
 ${TOUCH} ${DIR}/bar123
@@ -109,5 +105,15 @@ assert_cmd "[ -f ${DIR}/foobar ]" "output file does not exist"
 assert_cmd "[ -f ${DIR}/12foo ]" "output file does not exist"
 assert_cmd "[ -f ${DIR}/123bar ]" "output file does not exist"
 assert_cmd "[ -f ${DIR}/0baz ]" "output file does not exist"
+test_end
+
+test_start 6
+${MKDIR} ${DIR}
+${TOUCH} ${DIR}/foobar
+${TOUCH} ${DIR}/foobaz
+${RER} /bar/baz/ ${DIR}/foobar
+assert_cmd '[ $? -eq 0 ]' "exit status != 0"
+assert_cmd "[ -f ${DIR}/foobar ]" "output file does not exist"
+assert_cmd "[ -f ${DIR}/foobaz ]" "output file does not exist"
 test_end
 

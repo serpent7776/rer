@@ -41,6 +41,7 @@ typedef enum {
 	RER_STATUS_NOMATCH       = 1, /* file name did not match given regex */
 	RER_STATUS_ERROR         = 2, /* an error occured */
 	RER_STATUS_RENAME_FAILED = 3, /* error while renaming file */
+	RER_STATUS_FILE_EXISTS   = 4, /* output file already exists */
 } Rer_status;
 
 typedef enum {
