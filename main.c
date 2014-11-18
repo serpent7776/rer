@@ -50,11 +50,11 @@ int main(int argc, char** argv)
 
 			pattern = pos;
 			prev_pos = strsep(&pos, re_separator);
-			if (*prev_pos != '\0') {
+			if (prev_pos != NULL) {
 				replacement = pos;
 			}
 			prev_pos = strsep(&pos, re_separator);
-			if (*prev_pos != '\0') {
+			if (prev_pos != NULL) {
 				modifiers = pos;
 			}
 

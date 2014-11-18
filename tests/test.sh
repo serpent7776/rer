@@ -117,3 +117,13 @@ assert_cmd "[ -f ${DIR}/foobar ]" "output file does not exist"
 assert_cmd "[ -f ${DIR}/foobaz ]" "output file does not exist"
 test_end
 
+test_start 7
+${MKDIR} ${DIR}
+${TOUCH} ${DIR}/foobar
+${TOUCH} ${DIR}/foobaz
+${RER} /foo// ${DIR}/*
+assert_cmd '[ $? -eq 0 ]' "exit status != 0"
+assert_cmd "[ -f ${DIR}/bar ]" "output file does not exist"
+assert_cmd "[ -f ${DIR}/baz ]" "output file does not exist"
+test_end
+
