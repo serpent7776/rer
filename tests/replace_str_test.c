@@ -67,6 +67,46 @@ void replace_str_test()
 	}
 }
 
+void replace_str1_test()
+{
+	{
+		const char* string="foobar";
+		const char* search="foo";
+		const char* replace="baz";
+		const char* result="bazbar";
+		char* ret=replace_str1(string, search, replace);
+		CU_ASSERT_STRING_EQUAL(ret, result);
+		free(ret);
+	}
+	{
+		const char* string="foofoofoo";
+		const char* search="foo";
+		const char* replace="bar";
+		const char* result="barfoofoo";
+		char* ret=replace_str1(string, search, replace);
+		CU_ASSERT_STRING_EQUAL(ret, result);
+		free(ret);
+	}
+	{
+		const char* string="barfoofoobaz";
+		const char* search="foo";
+		const char* replace="test";
+		const char* result="bartestfoobaz";
+		char* ret=replace_str1(string, search, replace);
+		CU_ASSERT_STRING_EQUAL(ret, result);
+		free(ret);
+	}
+	{
+		const char* string="123456789foo123foo12345689";
+		const char* search="foo";
+		const char* replace="";
+		const char* result="123456789123foo12345689";
+		char* ret=replace_str1(string, search, replace);
+		CU_ASSERT_STRING_EQUAL(ret, result);
+		free(ret);
+	}
+}
+
 void replace_stri_test()
 {
 	{

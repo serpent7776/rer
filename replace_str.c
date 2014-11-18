@@ -44,6 +44,51 @@ char *replace_str(const char *str, const char *old, const char *new)
 	return ret;
 }
 
+/*
+ * code below written by Serpent7776
+ * based on replace_str function
+ */
+
+char *replace_str1(const char *str, const char *old, const char *new)
+{
+	char *ret, *r;
+	const char *p, *q;
+	const size_t oldlen = strlen(old);
+	const size_t newlen = strlen(new);
+	size_t count, retlen;
+
+	if (oldlen != newlen) {
+		count = 0;
+		p = str;
+		if ((q = strstr(str, old)) != NULL) {
+			count = 1;
+			p = q + oldlen;
+		}
+		/* this is undefined if p - str > PTRDIFF_MAX */
+		retlen = p - str + strlen(p) + count * (newlen - oldlen);
+	} else {
+		retlen = strlen(str);
+	}
+
+	if ((ret = malloc(retlen + 1)) == NULL)
+		return NULL;
+
+	r = ret;
+	p = str;
+	if ((q = strstr(p, old)) != NULL) {
+		/* this is undefined if q - p > PTRDIFF_MAX */
+		ptrdiff_t l = q - p;
+		memcpy(r, p, l);
+		r += l;
+		memcpy(r, new, newlen);
+		r += newlen;
+		p = q + oldlen;
+	}
+	strcpy(r, p);
+
+	return ret;
+}
+
 char *replace_stri(const char *str, int start_pos, size_t length, const char *new)
 {
 	char *ret, *r;

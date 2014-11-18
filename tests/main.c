@@ -49,6 +49,7 @@ int main()
 	};
 	CU_TestInfo replace_str_tests[]={
 		{"replace_str", replace_str_test},
+		{"replace_str1", replace_str1_test},
 		{"replace_stri", replace_stri_test},
 		CU_TEST_INFO_NULL
 	};

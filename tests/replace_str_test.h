@@ -23,4 +23,5 @@
  */
 
 void replace_str_test();
+void replace_str1_test();
 void replace_stri_test();

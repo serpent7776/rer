@@ -7,4 +7,5 @@
  */
 
 char* replace_str(const char *str, const char *old, const char *new);
+char* replace_str1(const char *str, const char *old, const char *new);
 char* replace_stri(const char* str, int start_pos, size_t length, const char* new_str);
