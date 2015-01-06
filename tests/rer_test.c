@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Serpent7776. All Rights Reserved.
+ * Copyright © 2014,2015 Serpent7776. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -22,12 +22,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define RER_INTERNAL
-
 #include <stdlib.h>
 #include <pcre.h>
 #include <CUnit/CUnit.h>
-#include "../rer.h"
+#include "../rer_int.h"
 
 void rer_test_processname()
 {
@@ -60,6 +58,18 @@ void rer_test_processname()
 		RER rer=rer_create("o", "xz", "");
 		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
 		char* name=rer_processname(rer, "foobar");
+		const char* expected="./fxzobar";
+		CU_ASSERT_PTR_NOT_NULL(name);
+		if (name) {
+			CU_ASSERT_STRING_EQUAL(name, expected);
+		}
+		rer_destroy(rer);
+	}
+	{
+		//substring replace of bigger length (global)
+		RER rer=rer_create("o", "xz", "g");
+		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
+		char* name=rer_processname(rer, "foobar");
 		const char* expected="./fxzxzbar";
 		CU_ASSERT_PTR_NOT_NULL(name);
 		if (name) {
@@ -82,6 +92,18 @@ void rer_test_processname()
 	{
 		//multiple replace
 		RER rer=rer_create("12", "2", "");
+		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
+		char* name=rer_processname(rer, "1212foo12bar121212baz121212");
+		const char* expected= "./212foo12bar121212baz121212";
+		CU_ASSERT_PTR_NOT_NULL(name);
+		if (name) {
+			CU_ASSERT_STRING_EQUAL(name, expected);
+		}
+		rer_destroy(rer);
+	}
+	{
+		//multiple replace (global)
+		RER rer=rer_create("12", "2", "g");
 		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
 		char* name=rer_processname(rer, "1212foo12bar121212baz121212");
 		const char* expected="./22foo2bar222baz222";
@@ -107,6 +129,18 @@ void rer_test_processname()
 		//replace with /i modifier
 		RER rer=rer_create("foo", "bar", "i");
 		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
+		char* name=rer_processname(rer, "FoOfoofOO");
+		const char* expected="./barfoofOO";
+		CU_ASSERT_PTR_NOT_NULL(name);
+		if (name) {
+			CU_ASSERT_STRING_EQUAL(name, expected);
+		}
+		rer_destroy(rer);
+	}
+	{
+		//replace with /i modifier (global)
+		RER rer=rer_create("foo", "bar", "ig");
+		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
 		char* name=rer_processname(rer, "FoofoofOO");
 		const char* expected="./barbarbar";
 		CU_ASSERT_PTR_NOT_NULL(name);
@@ -117,7 +151,19 @@ void rer_test_processname()
 	}
 	{
 		//replace regex \d
-		RER rer=rer_create("\\d", "12", "");
+		RER rer=rer_create("\\d", "123", "");
+		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
+		char* name=rer_processname(rer, "123456789");
+		const char* expected="./12323456789";
+		CU_ASSERT_PTR_NOT_NULL(name);
+		if (name) {
+			CU_ASSERT_STRING_EQUAL(name, expected);
+		}
+		rer_destroy(rer);
+	}
+	{
+		//replace regex \d (global)
+		RER rer=rer_create("\\d", "12", "g");
 		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
 		char* name=rer_processname(rer, "123456789");
 		const char* expected="./121212121212121212";
@@ -133,38 +179,77 @@ void rer_test_translate_modifiers()
 {
 	{
 		//null string
+		Rer_modifiers rmods;
+		rmods.pcre_mods = 1;
+		rmods.rer_mods = 1;
 		const char* mods=NULL;
-		const int output = rer_translate_modifiers(mods);
-		const int expected = 0;
-		CU_ASSERT_EQUAL(output, expected);
+		const int output = rer_translate_modifiers(mods, &rmods);
+		const int expected_retcode = 1;
+		const int expected_pcre_mods = 1;
+		const int expected_rer_mods = 1;
+		CU_ASSERT_EQUAL(output, expected_retcode);
+		CU_ASSERT_EQUAL(rmods.pcre_mods, expected_pcre_mods);
+		CU_ASSERT_EQUAL(rmods.rer_mods, expected_rer_mods);
 	}
 	{
 		//empty string
+		Rer_modifiers rmods;
 		const char* mods="";
-		const int output = rer_translate_modifiers(mods);
-		const int expected = 0;
-		CU_ASSERT_EQUAL(output, expected);
+		const int output = rer_translate_modifiers(mods, &rmods);
+		const int expected_retcode = 0;
+		const int expected_pcre_mods = 0;
+		const int expected_rer_mods = 0;
+		CU_ASSERT_EQUAL(output, expected_retcode);
+		CU_ASSERT_EQUAL(rmods.pcre_mods, expected_pcre_mods);
+		CU_ASSERT_EQUAL(rmods.rer_mods, expected_rer_mods);
 	}
 	{
 		//empty string
+		Rer_modifiers rmods;
 		const char* mods="i";
-		const int output = rer_translate_modifiers(mods);
-		const int expected = PCRE_CASELESS;
-		CU_ASSERT_EQUAL(output, expected);
+		const int output = rer_translate_modifiers(mods, &rmods);
+		const int expected_retcode = 0;
+		const int expected_pcre_mods = PCRE_CASELESS;
+		const int expected_rer_mods = 0;
+		CU_ASSERT_EQUAL(output, expected_retcode);
+		CU_ASSERT_EQUAL(rmods.pcre_mods, expected_pcre_mods);
+		CU_ASSERT_EQUAL(rmods.rer_mods, expected_rer_mods);
 	}
 	{
 		//empty string
+		Rer_modifiers rmods;
 		const char* mods="ix";
-		const int output = rer_translate_modifiers(mods);
-		const int expected = PCRE_CASELESS | PCRE_EXTENDED;
-		CU_ASSERT_EQUAL(output, expected);
+		const int output = rer_translate_modifiers(mods, &rmods);
+		const int expected_retcode = 0;
+		const int expected_pcre_mods = PCRE_CASELESS | PCRE_EXTENDED;
+		const int expected_rer_mods = 0;
+		CU_ASSERT_EQUAL(output, expected_retcode);
+		CU_ASSERT_EQUAL(rmods.pcre_mods, expected_pcre_mods);
+		CU_ASSERT_EQUAL(rmods.rer_mods, expected_rer_mods);
 	}
 	{
 		//empty string
+		Rer_modifiers rmods;
 		const char* mods="U";
-		const int output = rer_translate_modifiers(mods);
-		const int expected = PCRE_UNGREEDY;
-		CU_ASSERT_EQUAL(output, expected);
+		const int output = rer_translate_modifiers(mods, &rmods);
+		const int expected_retcode = 0;
+		const int expected_pcre_mods = PCRE_UNGREEDY;
+		const int expected_rer_mods = 0;
+		CU_ASSERT_EQUAL(output, expected_retcode);
+		CU_ASSERT_EQUAL(rmods.pcre_mods, expected_pcre_mods);
+		CU_ASSERT_EQUAL(rmods.rer_mods, expected_rer_mods);
+	}
+	{
+		//rer /g option
+		Rer_modifiers rmods;
+		const char* mods="g";
+		const int output = rer_translate_modifiers(mods, &rmods);
+		const int expected_retcode = 0;
+		const int expected_pcre_mods = 0;
+		const int expected_rer_mods = RER_MOD_GLOBAL;
+		CU_ASSERT_EQUAL(output, expected_retcode);
+		CU_ASSERT_EQUAL(rmods.pcre_mods, expected_pcre_mods);
+		CU_ASSERT_EQUAL(rmods.rer_mods, expected_rer_mods);
 	}
 }
 
@@ -207,11 +292,11 @@ void rer_test_callback()
 void callback2(const char* path_old, const char* path_new, Rer_status status, void* param)
 {
 	int* val=(int*)param;
-	if (strcmp(path_old, "foo12") == 0 && strcmp(path_new, "./foo1212") == 0 && status == RER_STATUS_RENAME_FAILED) {
+	if (strcmp(path_old, "foo12") == 0 && strcmp(path_new, "./fooabc") == 0 && status == RER_STATUS_RENAME_FAILED) {
 		(*val) |= 1;
-	} else if (strcmp(path_old, "bar123") == 0 && strcmp(path_new, "./bar121212") == 0 && status == RER_STATUS_RENAME_FAILED) {
+	} else if (strcmp(path_old, "bar123") == 0 && strcmp(path_new, "./barabc") == 0 && status == RER_STATUS_RENAME_FAILED) {
 		(*val) |= 2;
-	} else if (strcmp(path_old, "baz0") == 0 && strcmp(path_new, "./baz12") == 0 && status == RER_STATUS_RENAME_FAILED) {
+	} else if (strcmp(path_old, "baz0") == 0 && strcmp(path_new, "./bazabc") == 0 && status == RER_STATUS_RENAME_FAILED) {
 		(*val) |= 4;
 	} else {
 		(*val) -= 1;
@@ -220,7 +305,7 @@ void callback2(const char* path_old, const char* path_new, Rer_status status, vo
 
 void rer_test_exec()
 {
-	RER rer = rer_create("\\d", "12", "");
+	RER rer = rer_create("\\d+", "abc", "");
 	CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
 	int res=0;
 	rer_setcallback(rer, callback2, &res);
@@ -234,7 +319,7 @@ void rer_test_exec()
 
 void rer_test_reset()
 {
-	RER rer = rer_create("\\d", "12", "");
+	RER rer = rer_create("\\d+", "abc", "");
 	CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
 	int res=0;
 	rer_setcallback(rer, callback2, &res);

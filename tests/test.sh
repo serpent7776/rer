@@ -74,11 +74,11 @@ ${MKDIR} ${DIR}
 ${TOUCH} ${DIR}/xx
 ${TOUCH} ${DIR}/xxx
 ${TOUCH} ${DIR}/xyz
-${RER} /x/xx/ ${DIR}/*
+${RER} /x/xy/ ${DIR}/*
 assert_cmd '[ $? -eq 0 ]' "exit status != 0"
-assert_cmd "[ -f ${DIR}/xxxx ]" "output file does not exist"
-assert_cmd "[ -f ${DIR}/xxxxxx ]" "output file does not exist"
-assert_cmd "[ -f ${DIR}/xxyz ]" "output file does not exist"
+assert_cmd "[ -f ${DIR}/xyx ]" "output file does not exist"
+assert_cmd "[ -f ${DIR}/xyxx ]" "output file does not exist"
+assert_cmd "[ -f ${DIR}/xyyz ]" "output file does not exist"
 test_end
 
 test_start 4
@@ -125,5 +125,17 @@ ${RER} /foo// ${DIR}/*
 assert_cmd '[ $? -eq 0 ]' "exit status != 0"
 assert_cmd "[ -f ${DIR}/bar ]" "output file does not exist"
 assert_cmd "[ -f ${DIR}/baz ]" "output file does not exist"
+test_end
+
+test_start 8
+${MKDIR} ${DIR}
+${TOUCH} ${DIR}/xx
+${TOUCH} ${DIR}/xxx
+${TOUCH} ${DIR}/xyz
+${RER} /x/xy/g ${DIR}/*
+assert_cmd '[ $? -eq 0 ]' "exit status != 0"
+assert_cmd "[ -f ${DIR}/xyxy ]" "output file does not exist"
+assert_cmd "[ -f ${DIR}/xyxyxy ]" "output file does not exist"
+assert_cmd "[ -f ${DIR}/xyyz ]" "output file does not exist"
 test_end
 

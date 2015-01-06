@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Serpent7776. All Rights Reserved.
+ * Copyright © 2014,2015 Serpent7776. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,15 +28,13 @@
  * By:        Serpent7776
  */
 
-#define RER_INTERNAL
-
 #include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
-#include "rer_def.h"
+#include "rer_int.h"
 #include "replace_str.h"
 #include "debug.h"
 
@@ -44,11 +42,15 @@
 static Rer_defaults rer_defaults = {
 	16	//ovec_size
 };
-static Rer_mod_map rer_mod_map[] = {
+static Rer_mod_map pcre_mod_map[] = {
 	{'i', PCRE_CASELESS},
 	{'x', PCRE_EXTENDED},
 	{'U', PCRE_UNGREEDY},
-	{'\0', 0}
+	{0, 0}
+};
+static Rer_mod_map rer_mod_map[]= {
+	{'g', RER_MOD_GLOBAL},
+	{0, 0}
 };
 
 int rer_files_callback(const char* path, void* param)
@@ -74,11 +76,14 @@ RER rer_create(const char* pattern, const char* replacement, const char* modifie
 	if (rer) {
 		int errorpos;
 		const char* errormsg;
+		Rer_modifiers rmods;
 		//TODO: cleanup on error
 		rer->pattern = strdup(pattern);
 		rer->replacement = strdup(replacement);
 		rer->modifiers = strdup(modifiers);
-		rer->re_options = rer_translate_modifiers(modifiers);
+		rer_translate_modifiers(modifiers, &rmods);
+		rer->options = rmods.rer_mods;
+		rer->re_options = rmods.pcre_mods;
 		rer->files = fdlist_create();
 		rer->re_pattern = pcre_compile(pattern, rer->re_options, &errormsg, &errorpos, NULL);
 		rer->callback = NULL;
@@ -181,8 +186,9 @@ char* rer_processname(RER _rer, const char* path)
 		const size_t file_dir_length = strlen(file_dir);
 		rer->offset = 0;
 		rer->newfilename = strdup(file_name);
-		int repl_step = 0;
-		for (; rer_replace_part(rer)>0; repl_step++)
+		size_t repl_step = 0;
+		const size_t limit = (rer->options & RER_MOD_GLOBAL) ? -1 : 1;
+		for (; repl_step<limit && rer_replace_part(rer)>0 ; repl_step++)
 			;
 		if (rer->newfilename && repl_step>0) {
 			const size_t newfilename_length = strlen(rer->newfilename);
@@ -247,6 +253,7 @@ int rer_replace_part(RER _rer)
 		if (N>0) {
 			char* repl = strdup(rer->replacement);
 			if (repl) {
+				//replace backreferences
 				for (int i=1; i<N; i++) {
 					if (rer->re_ovec[2*i]!=-1 && rer->re_ovec[2*i+1]!=-1) {
 						const char* s;
@@ -290,21 +297,32 @@ int rer_replace_part(RER _rer)
 	return 0;
 }
 
-int rer_translate_modifiers(const char* mods)
+int rer_translate_modifiers(const char* mods, Rer_modifiers* rmods)
 {
-	if (mods) {
+	if (mods && rmods) {
 		const int mods_length = strlen(mods);
-		int flags = 0;
+		rmods->pcre_mods = 0;
+		rmods->rer_mods = 0;
 		for (int i=0; i<mods_length; i++) {
 			const char ch = mods[i];
-			for (int j=0; rer_mod_map[j].mod_flag; j++) {
-				if (ch == rer_mod_map[j].modifier) {
-					flags |= rer_mod_map[j].mod_flag;
+			int found = 0;
+			for (int j=0; pcre_mod_map[j].mod_flag; j++) {
+				if (ch == pcre_mod_map[j].modifier) {
+					rmods->pcre_mods |= pcre_mod_map[j].mod_flag;
+					found = 1;
 					break;
 				}
 			}
+			if (!found) {
+				for (int j=0; rer_mod_map[j].mod_flag; j++) {
+					if (ch == rer_mod_map[j].modifier) {
+						rmods->rer_mods |= rer_mod_map[j].mod_flag;
+						break;
+					}
+				}
+			}
 		}
-		return flags;
+		return 0;
 	}
-	return 0;
+	return 1;
 }

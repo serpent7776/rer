@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Serpent7776. All Rights Reserved.
+ * Copyright © 2014,2015 Serpent7776. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -63,11 +63,5 @@ Rer_error  rer_exec(RER);
 char*      rer_processname(RER, const char*);
 Rer_status rer_rename(RER, const char*, const char*);
 Rer_error  rer_reset(RER);
-
-#ifdef RER_INTERNAL
-//internal functions:
-int rer_replace_part(RER);
-int rer_translate_modifiers(const char* mods);
-#endif
 
 #endif

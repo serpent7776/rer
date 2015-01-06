@@ -24,54 +24,17 @@
 
 /*
  * Project:   rer
- * File:      rer_def.h
+ * File:      rer_int.h
  * By:        Serpent7776
  */
 
-#ifndef RER_DEF_H
-#define RER_DEF_H
+#ifndef RER_INT_H
+#define RER_INT_H
 
-#include <pcre.h>
-#include "fdlist.h"
-#include "rer.h"
+#include "rer_def.h"
 
-typedef struct {
-	//user specified values:
-	char*        pattern;     //regex pattern
-	char*        replacement;
-	char*        modifiers;   //regex modifiers
-	int          options;     //options
-	fdlist*      files;       //list of files to rename
-	rer_callback callback;
-	void*        callback_userparam;
-	//regex parameters:
-	pcre*        re_pattern;  //pcre compiled pattern
-	int          re_options;  //pcre options
-	int*         re_ovec;     //pcre output vector
-	int          re_ovecsize; //pcre output vector size
-	//intermediate values:
-	char*        newfilename; //pointer to internal buffer that holds new name for file; will be overwritten when processing next file
-	int          offset;      //starting offset
-	unsigned     counter;     //todo
-	Rer_status   status;
-} Rer;
-
-typedef struct {
-	char modifier;
-	int  mod_flag;
-} Rer_mod_map;
-
-typedef struct {
-	int ovec_size;
-} Rer_defaults;
-
-typedef struct {
-	int pcre_mods;
-	int rer_mods;
-} Rer_modifiers;
-
-enum {
-	RER_MOD_GLOBAL = 1
-};
+//internal functions:
+int rer_replace_part(RER);
+int rer_translate_modifiers(const char* mods, Rer_modifiers*);
 
 #endif
