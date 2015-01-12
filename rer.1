@@ -12,6 +12,8 @@ Each file name given as argument is matched against pattern.
 If a match is found file is renamed according to given replacement using pcre(3) compatible regular expression.
 .P
 Recognized modifiers:
+.IP "'g'"
+global mode; replace all occurences of pattern in file name instead of only first.
 .IP "'i'"
 Makes pattern case-insensitive.
 .IP "'x'"
@@ -36,4 +38,4 @@ mv(1), pcre(3)
 .SH AUTHOR
 Serpent7776 (serpent7776@gmail.com)
 .SH BUGS
-none known
+report here: https://github.com/serpent7776/rer/issues
