@@ -22,4 +22,5 @@ test: ${PROG}
 	(cd tests; ./rer_tests)
 	(cd tests; . ./test.sh)
 
+.include "Makefile.inc"
 .include <bsd.prog.mk>

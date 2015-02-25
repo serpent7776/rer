@@ -1,5 +1,7 @@
 .include <bsd.own.mk>
 
-DESTDIR?= /usr/local
-BINDIR?=  /bin
-MANDIR?=  /man
+PREFIX?=  /usr/local
+BINDIR=   ${PREFIX}/bin
+LIBDIR=   ${PREFIX}/lib
+MANDIR=   ${PREFIX}/man
+FILESDIR= ${PREFIX}/share/misc
