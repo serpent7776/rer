@@ -50,7 +50,7 @@ static Rer_mod_map pcre_mod_map[] = {
 	{0, 0}
 };
 static Rer_mod_map rer_mod_map[]= {
-	{'g', RER_MOD_GLOBAL},
+	{'g', RER_F_GLOBAL},
 	{0, 0}
 };
 
@@ -83,10 +83,10 @@ RER rer_create(const char* pattern, const char* replacement, const char* modifie
 		rer->replacement = strdup(replacement);
 		rer->modifiers = strdup(modifiers);
 		rer_translate_modifiers(modifiers, &rmods);
-		rer->options = rmods.rer_mods;
-		rer->re_options = rmods.pcre_mods;
+		rer->flags = rmods.rer_mods;
+		rer->re_flags = rmods.pcre_mods;
 		rer->files = fdlist_create();
-		rer->re_pattern = pcre_compile(pattern, rer->re_options, &errormsg, &errorpos, NULL);
+		rer->re_pattern = pcre_compile(pattern, rer->re_flags, &errormsg, &errorpos, NULL);
 		rer->callback = NULL;
 		rer->callback_userparam = NULL;
 		rer->counter = 0;
@@ -140,7 +140,7 @@ void rer_setcallback(RER _rer, rer_callback callback, void* param)
 	}
 }
 
-int rer_setopti(Rer_options option, int value)
+int rer_setopti(Rer_option option, int value)
 {
 	int ret = 0;
 	switch (option) {
@@ -152,7 +152,7 @@ int rer_setopti(Rer_options option, int value)
 	return ret;
 }
 
-int rer_getopti(Rer_options option)
+int rer_getopti(Rer_option option)
 {
 	int ret = 0;
 	switch (option) {
@@ -192,7 +192,7 @@ char* rer_processname(RER _rer, const char* path)
 			rer->offset = 0;
 			rer->newfilename = strdup(file_name);
 			size_t repl_step = 0;
-			const size_t limit = (rer->options & RER_MOD_GLOBAL) ? -1 : 1;
+			const size_t limit = (rer->flags & RER_F_GLOBAL) ? -1 : 1;
 			for (; repl_step<limit && rer_replace_part(rer)>0 ; repl_step++)
 				;
 			if (rer->newfilename && repl_step>0) {

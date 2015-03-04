@@ -40,13 +40,13 @@ typedef struct {
 	char*        pattern;     //regex pattern
 	char*        replacement;
 	char*        modifiers;   //regex modifiers
-	int          options;     //options
+	int          flags;       //rer flags
 	fdlist*      files;       //list of files to rename
 	rer_callback callback;
 	void*        callback_userparam;
 	//regex parameters:
 	pcre*        re_pattern;  //pcre compiled pattern
-	int          re_options;  //pcre options
+	int          re_flags;    //pcre flags
 	int*         re_ovec;     //pcre output vector
 	int          re_ovecsize; //pcre output vector size
 	//intermediate values:
@@ -70,8 +70,9 @@ typedef struct {
 	int rer_mods;
 } Rer_modifiers;
 
+// rer flags
 enum {
-	RER_MOD_GLOBAL = 1
+	RER_F_GLOBAL = 1
 };
 
 #endif

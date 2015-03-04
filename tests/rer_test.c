@@ -246,7 +246,7 @@ void rer_test_translate_modifiers()
 		const int output = rer_translate_modifiers(mods, &rmods);
 		const int expected_retcode = 0;
 		const int expected_pcre_mods = 0;
-		const int expected_rer_mods = RER_MOD_GLOBAL;
+		const int expected_rer_mods = RER_F_GLOBAL;
 		CU_ASSERT_EQUAL(output, expected_retcode);
 		CU_ASSERT_EQUAL(rmods.pcre_mods, expected_pcre_mods);
 		CU_ASSERT_EQUAL(rmods.rer_mods, expected_rer_mods);

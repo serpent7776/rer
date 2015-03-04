@@ -38,7 +38,7 @@
 //options for rer_[sg]etopti
 typedef enum {
 	RER_OPT_OVEC_SIZE = 0x0001, /* set default ovec size */
-} Rer_options;
+} Rer_option;
 
 typedef enum {
 	RER_STATUS_OK            = 0, /* rename successful */
@@ -61,8 +61,8 @@ RER        rer_create(const char* pattern, const char* replacement, const char* 
 void       rer_destroy(RER);
 Rer_error  rer_addfile(RER, const char* path);
 void       rer_setcallback(RER, rer_callback, void* userparam);
-int        rer_setopti(Rer_options, int);
-int        rer_getopti(Rer_options);
+int        rer_setopti(Rer_option, int);
+int        rer_getopti(Rer_option);
 Rer_error  rer_exec(RER);
 char*      rer_processname(RER, const char*);
 Rer_status rer_rename(RER, const char*, const char*);
