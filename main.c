@@ -31,15 +31,63 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <getopt.h>
 #include "rer.h"
 #include "debug.h"
 
+//getopt options
+#define OPT_HELP 1000
+#define OPT_VERSION 1001
+#define OPT_DRY_RUN 1002
+
+extern int optind;
+
+static int longopt = 0;
+static struct option longopts[] = {
+	{"help", no_argument, &longopt, OPT_HELP},
+	{"version", no_argument, &longopt, OPT_VERSION},
+	{"dry-run", no_argument, &longopt, OPT_DRY_RUN}
+};
+
+void show_help() {
+	fprintf(stdout, "rer v%s\nregular expression based file renamer\nusage:\n\trer /pattern/replacement/flags file_list..\n", RER_VERSION);
+}
+
+void show_version() {
+	fprintf(stdout, "rer v%s\n", RER_VERSION);
+}
+
 int main(int argc, char** argv)
 {
-	if (argc<2) {
-		//todo: show help
+	int ret;
+	int f_show_help = 0;
+	int f_show_version = 0;
+	int f_dry_run = 0;
+	while ((ret = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
+		if (ret == 0) {
+			switch (longopt) {
+				case OPT_HELP:
+					f_show_help = 1;
+					break;
+				case OPT_VERSION:
+					f_show_version = 1;
+					break;
+				case OPT_DRY_RUN:
+					f_dry_run = 1;
+					break;
+			}
+		} else if (ret == '?') {
+			f_show_help = 1;
+		}
+	}
+	argc -= optind;
+	argv += optind;
+	if ((argc<2 || f_show_help) && !f_show_version) {
+		show_help();
+	} else if (f_show_version) {
+		show_version();
 	} else {
-		char* regex = strdup(argv[1]);
+		char* regex = strdup(argv[0]);
 		if (regex) {
 			const char re_separator[2] = {regex[0], '\0'};
 			char* pattern = NULL;
@@ -63,18 +111,17 @@ int main(int argc, char** argv)
 			DEBUG_WRITE("main: modifiers: '%s'\n", modifiers);
 			RER rer=rer_create(pattern, replacement, modifiers);
 			if (rer) {
-				//todo: parse commandline options
-				for (int i=2; i<argc; i++) {
+				for (int i=1; i<argc; i++) {
 					DEBUG_WRITE("main: adding file '%s'\n", argv[i]);
 					rer_addfile(rer, argv[i]);
 				}
 				rer_exec(rer);
 				rer_destroy(rer);
-				return 0;
 			}
 			free(regex);
-			return 2;
+			return EXIT_SUCCESS;
 		}
-		return 1;
+		return EXIT_FAILURE;
 	}
+	return EXIT_SUCCESS;
 }
