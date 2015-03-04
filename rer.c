@@ -34,6 +34,7 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include "platform.h"
 #include "rer_int.h"
 #include "replace_str.h"
 #include "debug.h"
@@ -181,27 +182,32 @@ char* rer_processname(RER _rer, const char* path)
 			free(rer->newfilename);
 			rer->newfilename = NULL;
 		}
-		char* file_name = basename(path);
-		char* file_dir = dirname(path);
-		const size_t file_dir_length = strlen(file_dir);
-		rer->offset = 0;
-		rer->newfilename = strdup(file_name);
-		size_t repl_step = 0;
-		const size_t limit = (rer->options & RER_MOD_GLOBAL) ? -1 : 1;
-		for (; repl_step<limit && rer_replace_part(rer)>0 ; repl_step++)
-			;
-		if (rer->newfilename && repl_step>0) {
-			const size_t newfilename_length = strlen(rer->newfilename);
-			const size_t newpath_length = file_dir_length+newfilename_length+2;
-			char* buf = malloc(newpath_length);
-			snprintf(buf, newpath_length, "%s/%s", file_dir, rer->newfilename);
-			free(rer->newfilename);
-			rer->newfilename = buf;
-			rer->status = RER_STATUS_OK;
-		} else {
-			rer->status = repl_step>0 ? RER_STATUS_ERROR : RER_STATUS_NOMATCH;
+		char* file_name = NULL;
+		char* file_dir = NULL;
+		int result_ok = 0;
+		PLAT_BASE_DIR_NAME(path, file_name, file_dir, result_ok);
+		DEBUG_WRITE("basename: %s, dirname: %s\n", file_name, file_dir);
+		if (result_ok) {
+			const size_t file_dir_length = strlen(file_dir);
+			rer->offset = 0;
+			rer->newfilename = strdup(file_name);
+			size_t repl_step = 0;
+			const size_t limit = (rer->options & RER_MOD_GLOBAL) ? -1 : 1;
+			for (; repl_step<limit && rer_replace_part(rer)>0 ; repl_step++)
+				;
+			if (rer->newfilename && repl_step>0) {
+				const size_t newfilename_length = strlen(rer->newfilename);
+				const size_t newpath_length = file_dir_length+newfilename_length+2;
+				char* buf = malloc(newpath_length);
+				snprintf(buf, newpath_length, "%s/%s", file_dir, rer->newfilename);
+				free(rer->newfilename);
+				rer->newfilename = buf;
+				rer->status = RER_STATUS_OK;
+			} else {
+				rer->status = repl_step>0 ? RER_STATUS_ERROR : RER_STATUS_NOMATCH;
+			}
+			return rer->newfilename;
 		}
-		return rer->newfilename;
 	}
 	return NULL;
 }
