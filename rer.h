@@ -31,6 +31,10 @@
 #ifndef RER_H
 #define RER_H
 
+#define _rer_s(x) #x
+#define _rer_q(x) _rer_s(x)
+#define RER_VERSION _rer_q(_RER_VERSION)
+
 //options for rer_[sg]etopti
 typedef enum {
 	RER_OPT_OVEC_SIZE = 0x0001, /* set default ovec size */

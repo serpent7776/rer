@@ -1,7 +1,8 @@
 PROG = rer
+VERSION = 0.1
 SRCS = fdlist.c rer.c replace_str.c main.c
 CC = clang
-CFLAGS += -std=gnu99 -O2 -DHOST_OS=${host_os}
+CFLAGS += -std=gnu99 -O2 -DHOST_OS=${host_os} -D_RER_VERSION=${VERSION}
 MAN = rer.1
 MANTARGET = man
 
