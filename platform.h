@@ -33,6 +33,8 @@
 
 #if HOST_OS == freebsd
 #include "platform/plat_freebsd.h"
+#elif HOST_OS == linux
+#include "platform/plat_linux.h"
 #else
 #error "Unsupported platform"
 #endif
