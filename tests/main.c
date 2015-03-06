@@ -57,6 +57,7 @@ int main()
 		{"rer_processname", rer_test_processname},
 		{"rer_translate_modifiers", rer_test_translate_modifiers},
 		{"rer_defopts", rer_test_defopts},
+		{"rer_flags", rer_test_flags},
 		{"rer_callback", rer_test_callback},
 		{"rer_exec", rer_test_exec},
 		{"rer_reset", rer_test_reset},

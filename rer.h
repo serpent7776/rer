@@ -49,10 +49,16 @@ typedef enum {
 } Rer_status;
 
 typedef enum {
-	RER_ERR_OK = 0, /* no error */
+	RER_ERR_OK      = 0, /* no error */
 	RER_ERR_NULLPTR = 1, /* null pointer */
-	RER_ERR_NULL = 2, /* null pointer */
+	RER_ERR_NULL    = 2, /* null pointer */
 } Rer_error;
+
+// rer flags
+typedef enum {
+	RER_F_GLOBAL  = 1,
+	RER_F_DRY_RUN = 2,
+} Rer_flag;
 
 typedef	void* RER;
 typedef void (*rer_callback)(const char* path_original, const char* path_renamed, Rer_status status, void* userparam);
@@ -63,6 +69,10 @@ Rer_error  rer_addfile(RER, const char* path);
 void       rer_setcallback(RER, rer_callback, void* userparam);
 int        rer_setdefopti(Rer_option, int);
 int        rer_getdefopti(Rer_option);
+int        rer_getflags(RER);
+int        rer_setflags(RER, int);
+int        rer_setflag(RER, Rer_flag);
+int        rer_clrflag(RER, Rer_flag);
 Rer_error  rer_exec(RER);
 char*      rer_processname(RER, const char*);
 Rer_status rer_rename(RER, const char*, const char*);

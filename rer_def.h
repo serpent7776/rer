@@ -70,9 +70,4 @@ typedef struct {
 	int rer_mods;
 } Rer_modifiers;
 
-// rer flags
-enum {
-	RER_F_GLOBAL = 1
-};
-
 #endif

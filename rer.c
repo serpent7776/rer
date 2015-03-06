@@ -140,6 +140,45 @@ void rer_setcallback(RER _rer, rer_callback callback, void* param)
 	}
 }
 
+int rer_getflags(RER _rer) {
+	int flags = -1;
+	if (_rer) {
+		Rer* rer=(Rer*)_rer;
+		flags = rer->flags;
+	}
+	return flags;
+}
+
+int rer_setflags(RER _rer, int flags) {
+	int ret = -1;
+	if (_rer) {
+		Rer* rer=(Rer*)_rer;
+		rer->flags = flags;
+		ret = rer->flags;
+	}
+	return ret;
+}
+
+int rer_setflag(RER _rer, Rer_flag flag) {
+	int flags = -1;
+	if (_rer) {
+		Rer* rer=(Rer*)_rer;
+		rer->flags |= flag;
+		flags = rer->flags;
+	}
+	return flags;
+}
+
+int rer_clrflag(RER _rer, Rer_flag flag) {
+	int flags = -1;
+	if (_rer) {
+		Rer* rer=(Rer*)_rer;
+		rer->flags &= ~flag;
+		flags = rer->flags;
+	}
+	return flags;
+}
+
 int rer_setdefopti(Rer_option option, int value)
 {
 	int ret = 0;
