@@ -56,7 +56,7 @@ int main()
 	CU_TestInfo rer_tests[]={
 		{"rer_processname", rer_test_processname},
 		{"rer_translate_modifiers", rer_test_translate_modifiers},
-		{"rer_options", rer_test_options},
+		{"rer_defopts", rer_test_defopts},
 		{"rer_callback", rer_test_callback},
 		{"rer_exec", rer_test_exec},
 		{"rer_reset", rer_test_reset},

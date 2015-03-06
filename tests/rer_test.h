@@ -24,7 +24,7 @@
 
 void rer_test_processname();
 void rer_test_translate_modifiers();
-void rer_test_options();
+void rer_test_defopts();
 void rer_test_callback();
 void rer_test_exec();
 void rer_test_reset();

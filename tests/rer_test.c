@@ -253,7 +253,7 @@ void rer_test_translate_modifiers()
 	}
 }
 
-void rer_test_options()
+void rer_test_defopts()
 {
 	int wanted = 24;
 	rer_setdefopti(RER_OPT_OVEC_SIZE, wanted);
