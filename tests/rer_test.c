@@ -256,8 +256,8 @@ void rer_test_translate_modifiers()
 void rer_test_options()
 {
 	int wanted = 24;
-	rer_setopti(RER_OPT_OVEC_SIZE, wanted);
-	int output = rer_getopti(RER_OPT_OVEC_SIZE);
+	rer_setdefopti(RER_OPT_OVEC_SIZE, wanted);
+	int output = rer_getdefopti(RER_OPT_OVEC_SIZE);
 	CU_ASSERT_EQUAL(wanted, output);
 }
 

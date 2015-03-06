@@ -140,7 +140,7 @@ void rer_setcallback(RER _rer, rer_callback callback, void* param)
 	}
 }
 
-int rer_setopti(Rer_option option, int value)
+int rer_setdefopti(Rer_option option, int value)
 {
 	int ret = 0;
 	switch (option) {
@@ -152,7 +152,7 @@ int rer_setopti(Rer_option option, int value)
 	return ret;
 }
 
-int rer_getopti(Rer_option option)
+int rer_getdefopti(Rer_option option)
 {
 	int ret = 0;
 	switch (option) {

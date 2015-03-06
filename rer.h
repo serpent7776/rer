@@ -61,8 +61,8 @@ RER        rer_create(const char* pattern, const char* replacement, const char* 
 void       rer_destroy(RER);
 Rer_error  rer_addfile(RER, const char* path);
 void       rer_setcallback(RER, rer_callback, void* userparam);
-int        rer_setopti(Rer_option, int);
-int        rer_getopti(Rer_option);
+int        rer_setdefopti(Rer_option, int);
+int        rer_getdefopti(Rer_option);
 Rer_error  rer_exec(RER);
 char*      rer_processname(RER, const char*);
 Rer_status rer_rename(RER, const char*, const char*);
