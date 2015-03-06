@@ -262,6 +262,12 @@ char* rer_processname(RER _rer, const char* path)
 
 Rer_status rer_rename(RER _rer, const char* from_name, const char* to_name)
 {
+	//if RER_F_DRY_RUN is set just forward call to rer_rename_dry_run
+	if (rer_chkflag(_rer, RER_F_DRY_RUN)) {
+		rer_rename_dry_run(_rer, from_name, to_name);
+		return RER_STATUS_IGNORED;
+	}
+
 	const int file_exists = access(to_name, F_OK);
 	if (file_exists == -1 && errno == ENOENT) {
 		//file to_name does not exists
@@ -296,6 +302,15 @@ Rer_error rer_reset(RER _rer)
 /*
  * internal functions:
  */
+
+void rer_rename_dry_run(RER _rer, const char* from_name, const char* to_name) {
+	fprintf(stdout, "rename %s => %s", from_name, to_name);
+	const int file_exists = access(to_name, F_OK);
+	if (file_exists == 0) {
+		fprintf(stdout, "; Warning: output file already exists");
+	}
+	fprintf(stdout, "\n");
+}
 
 //TODO: this function is too complicated
 int rer_replace_part(RER _rer)

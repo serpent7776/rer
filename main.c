@@ -111,6 +111,9 @@ int main(int argc, char** argv)
 			DEBUG_WRITE("main: modifiers: '%s'\n", modifiers);
 			RER rer=rer_create(pattern, replacement, modifiers);
 			if (rer) {
+				if (f_dry_run) {
+					rer_setflag(rer, RER_F_DRY_RUN);
+				}
 				for (int i=1; i<argc; i++) {
 					DEBUG_WRITE("main: adding file '%s'\n", argv[i]);
 					rer_addfile(rer, argv[i]);

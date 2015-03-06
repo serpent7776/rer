@@ -46,6 +46,7 @@ typedef enum {
 	RER_STATUS_ERROR         = 2, /* an error occured */
 	RER_STATUS_RENAME_FAILED = 3, /* error while renaming file */
 	RER_STATUS_FILE_EXISTS   = 4, /* output file already exists */
+	RER_STATUS_IGNORED       = 5, /* file was ignored */
 } Rer_status;
 
 typedef enum {
