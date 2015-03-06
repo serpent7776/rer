@@ -1,15 +1,23 @@
 .\" Man page for rer
 .\" Contact serpent7776@gmail.com to correct errors or omissions.
-.TH rer 1
+.TH rer 1 "" 0.1
 .SH NAME
 rer - regular expression file renamer
 .SH SYNOPSIS
-rer /pattern/replacement/modifiers file [file [...]]
+rer [options] /pattern/replacement/modifiers file [file [...]]
 .SH DESCRIPTION
 rer is tool that rename files that matches given pattern.
 .Pp
 Each file name given as argument is matched against pattern.
 If a match is found file is renamed according to given replacement using pcre(3) compatible regular expression.
+.P
+Recognized options:
+.IP "--dry-run"
+do not actually rename files, just print what would be done
+.IP "--help"
+print short usage summary and quit
+.IP "--version"
+print version info and quit
 .P
 Recognized modifiers:
 .IP "'g'"
