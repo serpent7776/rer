@@ -73,6 +73,7 @@ int        rer_getflags(RER);
 int        rer_setflags(RER, int);
 int        rer_setflag(RER, Rer_flag);
 int        rer_clrflag(RER, Rer_flag);
+int        rer_chkflag(RER, Rer_flag);
 Rer_error  rer_exec(RER);
 char*      rer_processname(RER, const char*);
 Rer_status rer_rename(RER, const char*, const char*);

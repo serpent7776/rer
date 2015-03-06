@@ -276,6 +276,10 @@ void rer_test_flags()
 		CU_ASSERT_EQUAL(flags, RER_F_GLOBAL | RER_F_DRY_RUN);
 		flags = rer_clrflag(rer, RER_F_GLOBAL);
 		CU_ASSERT_EQUAL(flags, RER_F_DRY_RUN);
+		int ret = rer_chkflag(rer, RER_F_DRY_RUN);
+		CU_ASSERT_TRUE(ret);
+		ret = rer_chkflag(rer, RER_F_GLOBAL);
+		CU_ASSERT_FALSE(ret);
 		flags = rer_clrflag(rer, RER_F_DRY_RUN);
 		CU_ASSERT_EQUAL(flags, 0);
 		rer_destroy(rer);

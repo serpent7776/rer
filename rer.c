@@ -179,6 +179,15 @@ int rer_clrflag(RER _rer, Rer_flag flag) {
 	return flags;
 }
 
+int rer_chkflag(RER _rer, Rer_flag flag) {
+	int ret = 0;
+	if (_rer) {
+		Rer* rer=(Rer*)_rer;
+		ret = rer->flags & flag;
+	}
+	return ret;
+}
+
 int rer_setdefopti(Rer_option option, int value)
 {
 	int ret = 0;
