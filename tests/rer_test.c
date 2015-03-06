@@ -263,21 +263,30 @@ void rer_test_defopts()
 
 void rer_test_flags()
 {
-	RER rer=rer_create("foo", "bar", "");
-	CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
-	int flags = rer_getflags(rer);
-	CU_ASSERT_EQUAL(flags, 0);
-	flags = rer_setflag(rer, RER_F_GLOBAL);
-	CU_ASSERT_EQUAL(flags, RER_F_GLOBAL);
-	flags = rer_setflag(rer, RER_F_DRY_RUN);
-	CU_ASSERT_EQUAL(flags, RER_F_GLOBAL | RER_F_DRY_RUN);
-	flags = rer_getflags(rer);
-	CU_ASSERT_EQUAL(flags, RER_F_GLOBAL | RER_F_DRY_RUN);
-	flags = rer_clrflag(rer, RER_F_GLOBAL);
-	CU_ASSERT_EQUAL(flags, RER_F_DRY_RUN);
-	flags = rer_clrflag(rer, RER_F_DRY_RUN);
-	CU_ASSERT_EQUAL(flags, 0);
-	rer_destroy(rer);
+	{
+		RER rer=rer_create("foo", "bar", "");
+		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
+		int flags = rer_getflags(rer);
+		CU_ASSERT_EQUAL(flags, 0);
+		flags = rer_setflag(rer, RER_F_GLOBAL);
+		CU_ASSERT_EQUAL(flags, RER_F_GLOBAL);
+		flags = rer_setflag(rer, RER_F_DRY_RUN);
+		CU_ASSERT_EQUAL(flags, RER_F_GLOBAL | RER_F_DRY_RUN);
+		flags = rer_getflags(rer);
+		CU_ASSERT_EQUAL(flags, RER_F_GLOBAL | RER_F_DRY_RUN);
+		flags = rer_clrflag(rer, RER_F_GLOBAL);
+		CU_ASSERT_EQUAL(flags, RER_F_DRY_RUN);
+		flags = rer_clrflag(rer, RER_F_DRY_RUN);
+		CU_ASSERT_EQUAL(flags, 0);
+		rer_destroy(rer);
+	}
+	{
+		RER rer=rer_create("foo", "bar", "g");
+		CU_ASSERT_PTR_NOT_NULL_FATAL(rer);
+		int flags = rer_getflags(rer);
+		CU_ASSERT_EQUAL(flags, RER_F_GLOBAL);
+		rer_destroy(rer);
+	}
 }
 
 void callback1(const char* path_old, const char* path_new, Rer_status status, void* param)
