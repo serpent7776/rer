@@ -54,8 +54,7 @@ static Rer_mod_map rer_mod_map[]= {
 	{0, 0}
 };
 
-int rer_files_callback(const char* path, void* param)
-{
+int rer_files_callback(const char* path, void* param) {
 	Rer* rer = (Rer*)param;
 	char* newfilename = rer_processname(rer, path);
 	if (rer->status == RER_STATUS_OK) {
@@ -67,9 +66,8 @@ int rer_files_callback(const char* path, void* param)
 	return 0;
 }
 
-RER rer_create(const char* pattern, const char* replacement, const char* modifiers)
-{
-	if (pattern==NULL || replacement==NULL || modifiers==NULL) {
+RER rer_create(const char* pattern, const char* replacement, const char* modifiers) {
+	if (pattern == NULL || replacement == NULL || modifiers == NULL) {
 		return NULL;
 	}
 	DEBUG_WRITE("rer: creating new rer object\n");
@@ -100,10 +98,9 @@ RER rer_create(const char* pattern, const char* replacement, const char* modifie
 	return NULL;
 }
 
-void rer_destroy(RER _rer)
-{
+void rer_destroy(RER _rer) {
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		DEBUG_WRITE("rer: destroying rer object %p\n", rer);
 		free(rer->re_ovec);
 		free(rer->pattern);
@@ -119,12 +116,11 @@ void rer_destroy(RER _rer)
 	}
 }
 
-Rer_error rer_addfile(RER _rer, const char* path)
-{
+Rer_error rer_addfile(RER _rer, const char* path) {
 	if (_rer && path) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		DEBUG_WRITE("rer: adding path '%s' to rer %p\n", path, rer);
-		fdlist_node* node=fdlist_addfile(rer->files, path, rer->files->lastnode);
+		fdlist_node* node = fdlist_addfile(rer->files, path, rer->files->lastnode);
 		if (node) {
 			return RER_ERR_OK;
 		}
@@ -133,19 +129,18 @@ Rer_error rer_addfile(RER _rer, const char* path)
 	return RER_ERR_NULLPTR;
 }
 
-void rer_setcallback(RER _rer, rer_callback callback, void* param)
-{
+void rer_setcallback(RER _rer, rer_callback callback, void* param) {
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
-		rer->callback=callback;
-		rer->callback_userparam=param;
+		Rer* rer = (Rer*)_rer;
+		rer->callback = callback;
+		rer->callback_userparam = param;
 	}
 }
 
 int rer_getflags(RER _rer) {
 	int flags = -1;
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		flags = rer->flags;
 	}
 	return flags;
@@ -154,7 +149,7 @@ int rer_getflags(RER _rer) {
 int rer_setflags(RER _rer, int flags) {
 	int ret = -1;
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		rer->flags = flags;
 		ret = rer->flags;
 	}
@@ -164,7 +159,7 @@ int rer_setflags(RER _rer, int flags) {
 int rer_setflag(RER _rer, Rer_flag flag) {
 	int flags = -1;
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		rer->flags |= flag;
 		flags = rer->flags;
 	}
@@ -174,7 +169,7 @@ int rer_setflag(RER _rer, Rer_flag flag) {
 int rer_clrflag(RER _rer, Rer_flag flag) {
 	int flags = -1;
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		rer->flags &= ~flag;
 		flags = rer->flags;
 	}
@@ -184,14 +179,13 @@ int rer_clrflag(RER _rer, Rer_flag flag) {
 int rer_chkflag(RER _rer, Rer_flag flag) {
 	int ret = 0;
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		ret = rer->flags & flag;
 	}
 	return ret;
 }
 
-int rer_setdefopti(Rer_option option, int value)
-{
+int rer_setdefopti(Rer_option option, int value) {
 	int ret = 0;
 	switch (option) {
 		case RER_OPT_OVEC_SIZE: 
@@ -202,8 +196,7 @@ int rer_setdefopti(Rer_option option, int value)
 	return ret;
 }
 
-int rer_getdefopti(Rer_option option)
-{
+int rer_getdefopti(Rer_option option) {
 	int ret = 0;
 	switch (option) {
 		case RER_OPT_OVEC_SIZE:
@@ -213,20 +206,18 @@ int rer_getdefopti(Rer_option option)
 	return ret;
 }
 
-Rer_error rer_exec(RER _rer)
-{
+Rer_error rer_exec(RER _rer) {
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		DEBUG_WRITE("rer: executing file list for rer %p\n", rer);
 		fdlist_walk(rer->files, rer_files_callback, _rer);
 	}
 	return RER_ERR_OK;
 }
 
-char* rer_processname(RER _rer, const char* path)
-{
+char* rer_processname(RER _rer, const char* path) {
 	if (_rer && path) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		DEBUG_WRITE("rer: processing path '%s' for rer %p\n", path, rer);
 		if (rer->newfilename) {
 			free(rer->newfilename);
@@ -262,8 +253,7 @@ char* rer_processname(RER _rer, const char* path)
 	return NULL;
 }
 
-Rer_status rer_rename(RER _rer, const char* from_name, const char* to_name)
-{
+Rer_status rer_rename(RER _rer, const char* from_name, const char* to_name) {
 	//if RER_F_DRY_RUN is set just forward call to rer_rename_dry_run
 	if (rer_chkflag(_rer, RER_F_DRY_RUN)) {
 		rer_rename_dry_run(_rer, from_name, to_name);
@@ -276,8 +266,8 @@ Rer_status rer_rename(RER _rer, const char* from_name, const char* to_name)
 		DEBUG_WRITE("rer: renaming file from '%s' to '%s'\n", from_name, to_name);
 		const int status = rename(from_name, to_name);
 		if (_rer) {
-			Rer* rer=(Rer*)_rer;
-			rer->status = status==0 ? RER_STATUS_OK : RER_STATUS_RENAME_FAILED;
+			Rer* rer = (Rer*)_rer;
+			rer->status = status == 0 ? RER_STATUS_OK : RER_STATUS_RENAME_FAILED;
 		}
 		return status;
 	}
@@ -285,10 +275,9 @@ Rer_status rer_rename(RER _rer, const char* from_name, const char* to_name)
 	return RER_STATUS_FILE_EXISTS;
 }
 
-Rer_error rer_reset(RER _rer)
-{
+Rer_error rer_reset(RER _rer) {
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		DEBUG_WRITE("rer: resetting rer %p\n", rer);
 		fdlist_clear(rer->files);
 		free(rer->newfilename);
@@ -315,18 +304,17 @@ void rer_rename_dry_run(RER _rer, const char* from_name, const char* to_name) {
 }
 
 //TODO: this function is too complicated
-int rer_replace_part(RER _rer)
-{
+int rer_replace_part(RER _rer) {
 	if (_rer) {
-		Rer* rer=(Rer*)_rer;
+		Rer* rer = (Rer*)_rer;
 		const size_t newfilename_length = strlen(rer->newfilename);
 		const int N = pcre_exec(rer->re_pattern, NULL, rer->newfilename, newfilename_length, rer->offset, 0, rer->re_ovec, rer->re_ovecsize);
 		if (N>0) {
 			char* repl = strdup(rer->replacement);
 			if (repl) {
 				//replace backreferences
-				for (int i=1; i<N; i++) {
-					if (rer->re_ovec[2*i]!=-1 && rer->re_ovec[2*i+1]!=-1) {
+				for (int i = 1; i<N; i++) {
+					if (rer->re_ovec[2*i] != -1 && rer->re_ovec[2*i+1] != -1) {
 						const char* s;
 						const size_t ref_maxsize = 8;
 						char ref[ref_maxsize];
@@ -348,7 +336,7 @@ int rer_replace_part(RER _rer)
 			if (repl) {
 				const int match_length = rer->re_ovec[2*0+1]-rer->re_ovec[2*0];
 				const int repl_length = strlen(repl);
-				if (rer->re_ovec[2*0]!=-1 && rer->re_ovec[2*0+1]!=-1) {
+				if (rer->re_ovec[2*0] != -1 && rer->re_ovec[2*0+1] != -1) {
 					char* buf = replace_stri(rer->newfilename, rer->re_ovec[2*0], match_length, repl);
 					if (buf) {
 						if (rer->newfilename) {
@@ -368,16 +356,15 @@ int rer_replace_part(RER _rer)
 	return 0;
 }
 
-int rer_translate_modifiers(const char* mods, Rer_modifiers* rmods)
-{
+int rer_translate_modifiers(const char* mods, Rer_modifiers* rmods) {
 	if (mods && rmods) {
 		const int mods_length = strlen(mods);
 		rmods->pcre_mods = 0;
 		rmods->rer_mods = 0;
-		for (int i=0; i<mods_length; i++) {
+		for (int i = 0; i<mods_length; i++) {
 			const char ch = mods[i];
 			int found = 0;
-			for (int j=0; pcre_mod_map[j].mod_flag; j++) {
+			for (int j = 0; pcre_mod_map[j].mod_flag; j++) {
 				if (ch == pcre_mod_map[j].modifier) {
 					rmods->pcre_mods |= pcre_mod_map[j].mod_flag;
 					found = 1;
@@ -385,7 +372,7 @@ int rer_translate_modifiers(const char* mods, Rer_modifiers* rmods)
 				}
 			}
 			if (!found) {
-				for (int j=0; rer_mod_map[j].mod_flag; j++) {
+				for (int j = 0; rer_mod_map[j].mod_flag; j++) {
 					if (ch == rer_mod_map[j].modifier) {
 						rmods->rer_mods |= rer_mod_map[j].mod_flag;
 						break;
