@@ -233,9 +233,16 @@ char* rer_processname(RER _rer, const char* path) {
 			rer->offset = 0;
 			rer->newfilename = strdup(file_name);
 			size_t repl_step = 0;
-			const size_t limit = (rer->flags & RER_F_GLOBAL) ? -1 : 1;
-			for (; repl_step<limit && rer_replace_part(rer)>0 ; repl_step++)
-				;
+			const int is_global = rer->flags & RER_F_GLOBAL;
+			if (is_global) {
+				for (; rer_replace_part(rer) > 0; repl_step++) {
+					// empty
+				}
+			} else {
+				if (rer_replace_part(rer) > 0) {
+					repl_step = 1;
+				}
+			}
 			if (rer->newfilename && repl_step>0) {
 				const size_t newfilename_length = strlen(rer->newfilename);
 				const size_t newpath_length = file_dir_length+newfilename_length+2;
