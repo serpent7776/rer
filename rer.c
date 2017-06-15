@@ -107,12 +107,14 @@ void rer_destroy(RER _rer)
 		DEBUG_WRITE("rer: destroying rer object %p\n", rer);
 		free(rer->re_ovec);
 		free(rer->pattern);
+		pcre_free(rer->re_pattern);
 		free(rer->replacement);
 		free(rer->modifiers);
 		if (rer->newfilename) {
 			free(rer->newfilename);
 		}
 		fdlist_destroy(rer->files);
+		free(rer);
 		DEBUG_WRITE("rer: destroying done\n");
 	}
 }
