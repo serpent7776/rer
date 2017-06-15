@@ -19,8 +19,7 @@ LDADD += ${:!pkg-config --libs libpcre!}
 .endif
 
 test: ${PROG}
-	${MAKE} -C tests
-	(cd tests; ./rer_tests)
+	${MAKE} -C tests test
 	(cd tests; ./test.sh)
 
 .include "Makefile.inc"
