@@ -294,7 +294,7 @@ Rer_error rer_reset(RER _rer) {
  * internal functions:
  */
 
-void rer_rename_dry_run(RER _rer, const char* from_name, const char* to_name) {
+static void rer_rename_dry_run(RER _rer, const char* from_name, const char* to_name) {
 	fprintf(stdout, "rename %s => %s", from_name, to_name);
 	const int file_exists = access(to_name, F_OK);
 	if (file_exists == 0) {
@@ -304,7 +304,7 @@ void rer_rename_dry_run(RER _rer, const char* from_name, const char* to_name) {
 }
 
 //TODO: this function is too complicated
-int rer_replace_part(RER _rer) {
+static int rer_replace_part(RER _rer) {
 	if (_rer) {
 		Rer* rer = (Rer*)_rer;
 		const size_t newfilename_length = strlen(rer->newfilename);
