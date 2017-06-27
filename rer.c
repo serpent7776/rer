@@ -310,6 +310,20 @@ static void rer_rename_dry_run(RER _rer, const char* from_name, const char* to_n
 	fprintf(stdout, "\n");
 }
 
+static char* rer_replace_backref(Rer* rer, int N, int i, char* repl) {
+	if (rer->re_ovec[2 * i] != -1 && rer->re_ovec[2 * i + 1] != -1) {
+		const char* s;
+		const size_t ref_maxsize = 8;
+		char ref[ref_maxsize];
+		snprintf(ref, ref_maxsize, "\\%i", i);
+		pcre_get_substring(rer->newfilename, rer->re_ovec, N, i, &s);
+		char* newstring = replace_str(repl, ref, s);
+		pcre_free_substring(s);
+		return newstring;
+	}
+	return NULL;
+}
+
 //TODO: this function is too complicated
 static int rer_replace_part(RER _rer) {
 	if (_rer) {
@@ -319,22 +333,13 @@ static int rer_replace_part(RER _rer) {
 		if (N>0) {
 			char* repl = strdup(rer->replacement);
 			if (repl) {
-				//replace backreferences
-				for (int i = 1; i<N; i++) {
-					if (rer->re_ovec[2*i] != -1 && rer->re_ovec[2*i+1] != -1) {
-						const char* s;
-						const size_t ref_maxsize = 8;
-						char ref[ref_maxsize];
-						snprintf(ref, ref_maxsize, "\\%i", i);
-						pcre_get_substring(rer->newfilename, rer->re_ovec, N, i, &s);
-						char* newstring = replace_str(repl, ref, s);
-						pcre_free_substring(s);
+				for (int i = 1; i < N; i++) {
+					char* newstring = rer_replace_backref(rer, N, i, repl);
+					if (newstring) {
 						free(repl);
-						if (newstring) {
-							repl = newstring;
-						} else {
-							return 0;
-						}
+						repl = newstring;
+					} else {
+						return 0;
 					}
 				}
 			} else {
