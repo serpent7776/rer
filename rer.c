@@ -350,6 +350,7 @@ static int rer_replace_part(RER _rer) {
 				const int repl_length = strlen(repl);
 				if (rer->re_ovec[2*0] != -1 && rer->re_ovec[2*0+1] != -1) {
 					char* buf = replace_stri(rer->newfilename, rer->re_ovec[2*0], match_length, repl);
+					free(repl);
 					if (buf) {
 						if (rer->newfilename) {
 							free(rer->newfilename);
