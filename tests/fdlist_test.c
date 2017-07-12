@@ -48,6 +48,7 @@ void fdlist_test_mknode()
 		CU_ASSERT_PTR_NULL(node->next);
 		CU_ASSERT_PTR_NOT_NULL(node->file);
 		CU_ASSERT_STRING_EQUAL(node->file, path);
+		fdlist_delnode(node);
 	}
 
 }
