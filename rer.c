@@ -327,6 +327,22 @@ static char* rer_replace_backref(Rer* rer, int N, int i, char* repl) {
 	return NULL;
 }
 
+static void rer_replace_match(Rer* rer, char* repl) {
+	const int match_length = rer->re_ovec[1] - rer->re_ovec[0];
+	const int repl_length = strlen(repl);
+	if (rer->re_ovec[0] != -1 && rer->re_ovec[1] != -1) {
+		char* buf = replace_stri(rer->newfilename, rer->re_ovec[0], match_length, repl);
+		free(repl);
+		if (buf) {
+			if (rer->newfilename) {
+				free(rer->newfilename);
+			}
+			rer->newfilename = buf;
+		}
+		rer->offset = rer->re_ovec[1] + (repl_length - match_length);
+	}
+}
+
 //TODO: this function is too complicated
 static int rer_replace_part(RER _rer) {
 	if (_rer) {
@@ -349,20 +365,7 @@ static int rer_replace_part(RER _rer) {
 				return 0;
 			}
 			if (repl) {
-				const int match_length = rer->re_ovec[2*0+1]-rer->re_ovec[2*0];
-				const int repl_length = strlen(repl);
-				if (rer->re_ovec[2*0] != -1 && rer->re_ovec[2*0+1] != -1) {
-					char* buf = replace_stri(rer->newfilename, rer->re_ovec[2*0], match_length, repl);
-					free(repl);
-					if (buf) {
-						if (rer->newfilename) {
-							free(rer->newfilename);
-						}
-						rer->newfilename = buf;
-					}
-					rer->offset = rer->re_ovec[2*0+1]+(repl_length-match_length);
-				} else {
-				}
+				rer_replace_match(rer, repl);
 			} else {
 				return 0;
 			}
