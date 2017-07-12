@@ -33,9 +33,7 @@
 
 #include "rer_def.h"
 
-//internal functions:
-static void rer_rename_dry_run(RER, const char*, const char*);
-static int rer_replace_part(RER);
+// private api:
 int rer_translate_modifiers(const char* mods, Rer_modifiers*);
 
 #endif

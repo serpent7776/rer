@@ -39,6 +39,9 @@
 #include "replace_str.h"
 #include "debug.h"
 
+static void rer_rename_dry_run(RER, const char*, const char*);
+static int rer_replace_part(RER);
+
 //global variables
 static Rer_defaults rer_defaults = {
 	16	//ovec_size
