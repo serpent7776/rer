@@ -354,8 +354,8 @@ static int rer_replace_part(RER _rer) {
 			if (repl) {
 				for (int i = 1; i < N; i++) {
 					char* newstring = rer_replace_backref(rer, N, i, repl);
+					free(repl);
 					if (newstring) {
-						free(repl);
 						repl = newstring;
 					} else {
 						return 0;
