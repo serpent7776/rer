@@ -1,5 +1,5 @@
 PROG = rer
-VERSION = 0.1
+VERSION = 0.2
 SRCS = fdlist.c rer.c replace_str.c main.c
 CC = clang
 CFLAGS += -std=c11 -Wall -Wextra -O2 -DHOST_OS=${host_os} -D_RER_VERSION=${VERSION}
