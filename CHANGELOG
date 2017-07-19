@@ -1,0 +1,10 @@
+# Changelog
+
+## [0.2] - 2017-07-19
+
+## Fixed
+- fixed many memory leaks (thanks to valgrind)
+
+## [0.1] - 2015-03-06
+
+- initial version
